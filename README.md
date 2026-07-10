@@ -8,54 +8,67 @@ Bu proje; sipariş yönetimi, masa takibi, QR menü, stok kontrolü, rol bazlı 
 
 ## Ekran Görüntüleri
 
-### Giriş
+---
 
 <p align="center">
   <img src="https://github.com/user-attachments/assets/4b5ef340-ddad-408b-bf12-5c2be2347cde" width="550">
 </p>
 
-### Yönetim Paneli
+---
 
 <img src="https://github.com/user-attachments/assets/41be27cf-481b-4050-9b6d-9157e98c27f9">
 
-###
+---
 
 <img src="https://github.com/user-attachments/assets/e36ab2d1-3363-4a39-837e-1f144cbebd8a">
 
-<img src="https://github.com/user-attachments/assets/3ad6a4bd-53bf-450d-a967-24d77c286689">
+---
 
-### 
+<img src="https://github.com/user-attachments/assets/3ad6a4bd-53bf-450d-a967-24d77c286689">
+---
+
 <img src="https://github.com/user-attachments/assets/056da624-ddfb-4902-9b29-0d6c05e4afce">
+
+---
 
 <img src="https://github.com/user-attachments/assets/0b49d50c-c193-4101-b74c-e81be9bb519d">
 
-###
+---
 
 <img src="https://github.com/user-attachments/assets/86073195-2c04-4c2d-8083-919c9b21b0fe">
 
-### 
+---
 
 <img src="https://github.com/user-attachments/assets/c8a95367-4ca6-4539-bcad-ef17820e0052">
 
-<img src="https://github.com/user-attachments/assets/d858ef90-a591-459c-91cb-c530ec37b9f4">
+---
 
-### 
+<img src="https://github.com/user-attachments/assets/d858ef90-a591-459c-91cb-c530ec37b9f4">
+---
 
 <img src="https://github.com/user-attachments/assets/b8343c20-9e78-4f7f-8076-70ef2859ec89">
 
+---
+
 <img src="https://github.com/user-attachments/assets/b0aedac6-4c95-4f42-8e32-d96c66085614">
 
-###
+---
 
 <img src="https://github.com/user-attachments/assets/c8b65a74-4e8a-4174-b73b-2b40fa58cd36">
 
+---
+
 <img src="https://github.com/user-attachments/assets/45e7b5dc-4662-4888-974f-a181ea2432be">
 
-###
+---
 
 <img src="https://github.com/user-attachments/assets/5d55d4da-62ac-4f36-be3c-1f4741dd9aa1">
 
+---
+
 <img src="https://github.com/user-attachments/assets/e85835c8-f73d-4b31-bce8-99ce53dfbd7b">
+
+---
 
 <img src="https://github.com/user-attachments/assets/ba263249-deec-49de-b8c7-f3a38c762e63">
 
