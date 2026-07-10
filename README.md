@@ -18,41 +18,40 @@ Bu proje; sipariş yönetimi, masa takibi, QR menü, stok kontrolü, rol bazlı 
 
 <img src="https://github.com/user-attachments/assets/41be27cf-481b-4050-9b6d-9157e98c27f9">
 
-### Sipariş Yönetimi
+###
 
 <img src="https://github.com/user-attachments/assets/e36ab2d1-3363-4a39-837e-1f144cbebd8a">
 
 <img src="https://github.com/user-attachments/assets/3ad6a4bd-53bf-450d-a967-24d77c286689">
 
-### Menü Yönetimi
-
+### 
 <img src="https://github.com/user-attachments/assets/056da624-ddfb-4902-9b29-0d6c05e4afce">
 
 <img src="https://github.com/user-attachments/assets/0b49d50c-c193-4101-b74c-e81be9bb519d">
 
-### QR Menü
+###
 
 <img src="https://github.com/user-attachments/assets/86073195-2c04-4c2d-8083-919c9b21b0fe">
 
-### Finans ve Raporlama
+### 
 
 <img src="https://github.com/user-attachments/assets/c8a95367-4ca6-4539-bcad-ef17820e0052">
 
 <img src="https://github.com/user-attachments/assets/d858ef90-a591-459c-91cb-c530ec37b9f4">
 
-### Stok Yönetimi
+### 
 
 <img src="https://github.com/user-attachments/assets/b8343c20-9e78-4f7f-8076-70ef2859ec89">
 
 <img src="https://github.com/user-attachments/assets/b0aedac6-4c95-4f42-8e32-d96c66085614">
 
-### Personel Yönetimi
+###
 
 <img src="https://github.com/user-attachments/assets/c8b65a74-4e8a-4174-b73b-2b40fa58cd36">
 
 <img src="https://github.com/user-attachments/assets/45e7b5dc-4662-4888-974f-a181ea2432be">
 
-### Rol Bazlı Paneller
+###
 
 <img src="https://github.com/user-attachments/assets/5d55d4da-62ac-4f36-be3c-1f4741dd9aa1">
 
