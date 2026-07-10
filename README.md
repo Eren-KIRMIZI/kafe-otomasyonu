@@ -1,4 +1,4 @@
-# Kafe & Restoran Otomasyon Sistemi
+# Kafe Otomasyon Sistemi
 
 Kafeler için geliştirilmiş otomasyon sistemi.
 
