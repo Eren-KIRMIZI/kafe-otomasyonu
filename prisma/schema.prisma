@@ -1,0 +1,461 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  ADMIN
+  CASHIER
+  WAITER
+  KITCHEN
+  BARISTA
+}
+
+enum TableStatus {
+  EMPTY
+  ORDERED
+  WAITING_BILL
+  RESERVED
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PREPARING
+  READY
+  SERVED
+  COMPLETED
+  CANCELLED
+}
+
+enum OrderType {
+  DINE_IN
+  TAKEAWAY
+  DELIVERY
+}
+
+enum PaymentMethod {
+  CASH
+  CREDIT_CARD
+  QR_MEAL_CARD
+  MEAL_CARD
+  ONLINE
+}
+
+enum DiscountType {
+  PERCENTAGE
+  FIXED
+}
+
+enum ReservationStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
+
+enum InventoryMovementType {
+  IN
+  OUT
+  WASTE
+  ADJUSTMENT
+}
+
+enum ShiftStatus {
+  SCHEDULED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+// ─── Branch ──────────────────────────────────────────────────────────────────
+
+model Branch {
+  id          String   @id @default(uuid())
+  name        String
+  address     String
+  phone       String
+  isActive    Boolean  @default(true)
+  openingTime String
+  closingTime String
+  taxRate     Float    @default(0)
+  serviceFee  Float    @default(0)
+
+  users            User[]
+  categories       Category[]
+  products         Product[]
+  extras           ProductExtra[]
+  tables           Table[]
+  orders           Order[]
+  coupons          Coupon[]
+  reservations     Reservation[]
+  inventoryItems   InventoryItem[]
+  staff            Staff[]
+  settings         Setting[]
+}
+
+// ─── User ────────────────────────────────────────────────────────────────────
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  phone     String?
+  role      UserRole
+  branchId  String
+  avatar    String?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  branch          Branch          @relation(fields: [branchId], references: [id])
+  orders          Order[]         @relation("WaiterOrders")
+  inventoryMovements InventoryMovement[]
+  staff           Staff?
+  notifications   Notification[]
+  activityLogs    ActivityLog[]
+}
+
+// ─── Category ────────────────────────────────────────────────────────────────
+
+model Category {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  sortOrder   Int      @default(0)
+  isActive    Boolean  @default(true)
+  branchId    String
+
+  branch   Branch    @relation(fields: [branchId], references: [id])
+  products Product[]
+}
+
+// ─── Product ─────────────────────────────────────────────────────────────────
+
+model Product {
+  id              String    @id @default(uuid())
+  name            String
+  description     String?
+  price           Float
+  imageUrl        String?
+  categoryId      String
+  branchId        String
+  isActive        Boolean   @default(true)
+  isFood          Boolean   @default(false)
+  isBeverage      Boolean   @default(false)
+  preparationTime Int?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  category     Category           @relation(fields: [categoryId], references: [id])
+  branch       Branch             @relation(fields: [branchId], references: [id])
+  sizes        ProductSize[]
+  extras       ProductExtraItem[]
+  orderItems   OrderItem[]
+  favorites    CustomerFavorite[]
+}
+
+// ─── ProductSize ─────────────────────────────────────────────────────────────
+
+model ProductSize {
+  id            String @id @default(uuid())
+  productId     String
+  name          String
+  priceModifier Float  @default(0)
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+// ─── ProductExtra ────────────────────────────────────────────────────────────
+
+model ProductExtra {
+  id       String  @id @default(uuid())
+  name     String
+  price    Float
+  isActive Boolean @default(true)
+  branchId String
+
+  branch   Branch              @relation(fields: [branchId], references: [id])
+  products ProductExtraItem[]
+}
+
+// ─── ProductExtraItem (many-to-many) ─────────────────────────────────────────
+
+model ProductExtraItem {
+  productId String
+  extraId   String
+
+  product Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
+  extra   ProductExtra @relation(fields: [extraId], references: [id], onDelete: Cascade)
+
+  @@id([productId, extraId])
+}
+
+// ─── Table ───────────────────────────────────────────────────────────────────
+
+model Table {
+  id       String      @id @default(uuid())
+  number   Int
+  capacity Int
+  status   TableStatus @default(EMPTY)
+  branchId String
+  x        Int         @default(0)
+  y        Int         @default(0)
+  floor    Int         @default(1)
+
+  branch       Branch        @relation(fields: [branchId], references: [id])
+  orders       Order[]
+  mergedTables TableMerge[]  @relation("MergedTable")
+  mainMerge    TableMerge[]  @relation("MainTable")
+  reservations Reservation[]
+
+  @@unique([branchId, number])
+}
+
+// ─── TableMerge ──────────────────────────────────────────────────────────────
+
+model TableMerge {
+  id            String   @id @default(uuid())
+  mainTableId   String
+  mergedTableId String
+  mergedAt      DateTime @default(now())
+
+  mainTable   Table @relation("MainTable", fields: [mainTableId], references: [id])
+  mergedTable Table @relation("MergedTable", fields: [mergedTableId], references: [id])
+}
+
+// ─── Order ───────────────────────────────────────────────────────────────────
+
+model Order {
+  id            String      @id @default(uuid())
+  tableId       String?
+  branchId      String
+  waiterId      String?
+  status        OrderStatus @default(PENDING)
+  orderType     OrderType   @default(DINE_IN)
+  customerNote  String?
+  totalAmount   Float       @default(0)
+  discountAmount Float      @default(0)
+  serviceFee    Float       @default(0)
+  taxAmount     Float       @default(0)
+  finalAmount   Float       @default(0)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  table   Table?      @relation(fields: [tableId], references: [id])
+  branch  Branch      @relation(fields: [branchId], references: [id])
+  waiter  User?       @relation("WaiterOrders", fields: [waiterId], references: [id])
+  items   OrderItem[]
+  payment Payment?
+}
+
+// ─── OrderItem ───────────────────────────────────────────────────────────────
+
+model OrderItem {
+  id        String      @id @default(uuid())
+  orderId   String
+  productId String
+  quantity  Int         @default(1)
+  unitPrice Float
+  totalPrice Float
+  size      String?
+  note      String?
+  status    OrderStatus @default(PENDING)
+  extras    Json?
+
+  order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id])
+}
+
+// ─── Payment ─────────────────────────────────────────────────────────────────
+
+model Payment {
+  id            String        @id @default(uuid())
+  orderId       String        @unique
+  method        PaymentMethod
+  amount        Float
+  discountAmount Float       @default(0)
+  couponCode    String?
+  tipAmount     Float         @default(0)
+  createdAt     DateTime      @default(now())
+
+  order Order @relation(fields: [orderId], references: [id])
+}
+
+// ─── Coupon ──────────────────────────────────────────────────────────────────
+
+model Coupon {
+  id             String       @id @default(uuid())
+  code           String       @unique
+  discountType   DiscountType
+  discountValue  Float
+  minOrderAmount Float        @default(0)
+  maxUsage       Int?
+  currentUsage   Int          @default(0)
+  expiresAt      DateTime
+  isActive       Boolean      @default(true)
+  branchId       String?
+
+  branch Branch? @relation(fields: [branchId], references: [id])
+}
+
+// ─── Customer ────────────────────────────────────────────────────────────────
+
+model Customer {
+  id             String   @id @default(uuid())
+  name           String
+  phone          String?
+  email          String?
+  birthDate      DateTime?
+  loyaltyPoints  Int      @default(0)
+  totalSpent     Float    @default(0)
+  visitCount     Int      @default(0)
+  createdAt      DateTime @default(now())
+
+  favorites    CustomerFavorite[]
+  reservations Reservation[]
+}
+
+// ─── CustomerFavorite ────────────────────────────────────────────────────────
+
+model CustomerFavorite {
+  customerId String
+  productId  String
+
+  customer Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  product  Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@id([customerId, productId])
+}
+
+// ─── Reservation ─────────────────────────────────────────────────────────────
+
+model Reservation {
+  id         String            @id @default(uuid())
+  customerId String
+  tableId    String?
+  branchId   String
+  date       DateTime
+  time       String
+  partySize  Int
+  status     ReservationStatus @default(PENDING)
+  note       String?
+  createdAt  DateTime          @default(now())
+
+  customer Customer @relation(fields: [customerId], references: [id])
+  table    Table?   @relation(fields: [tableId], references: [id])
+  branch   Branch   @relation(fields: [branchId], references: [id])
+}
+
+// ─── InventoryItem ───────────────────────────────────────────────────────────
+
+model InventoryItem {
+  id            String    @id @default(uuid())
+  name          String
+  unit          String
+  currentStock  Float     @default(0)
+  minimumStock  Float     @default(0)
+  maximumStock  Float?
+  unitCost      Float     @default(0)
+  supplier      String?
+  supplierPhone String?
+  expiryDate    DateTime?
+  branchId      String
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  branch    Branch                @relation(fields: [branchId], references: [id])
+  movements InventoryMovement[]
+}
+
+// ─── InventoryMovement ───────────────────────────────────────────────────────
+
+model InventoryMovement {
+  id              String              @id @default(uuid())
+  inventoryItemId String
+  type            InventoryMovementType
+  quantity        Float
+  reason          String?
+  userId          String?
+  createdAt       DateTime            @default(now())
+
+  inventoryItem InventoryItem @relation(fields: [inventoryItemId], references: [id])
+  user          User?         @relation(fields: [userId], references: [id])
+}
+
+// ─── Staff ───────────────────────────────────────────────────────────────────
+
+model Staff {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  branchId  String
+  hourlyRate Float
+  startDate DateTime
+  endDate   DateTime?
+  isActive  Boolean  @default(true)
+
+  user   User   @relation(fields: [userId], references: [id])
+  branch Branch @relation(fields: [branchId], references: [id])
+  shifts Shift[]
+}
+
+// ─── Shift ───────────────────────────────────────────────────────────────────
+
+model Shift {
+  id        String     @id @default(uuid())
+  staffId   String
+  date      DateTime
+  startTime String
+  endTime   String
+  status    ShiftStatus @default(SCHEDULED)
+
+  staff Staff @relation(fields: [staffId], references: [id])
+}
+
+// ─── Notification ────────────────────────────────────────────────────────────
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String
+  type      String
+  title     String
+  message   String
+  isRead    Boolean  @default(false)
+  data      Json?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+// ─── Setting ─────────────────────────────────────────────────────────────────
+
+model Setting {
+  id        String   @id @default(uuid())
+  branchId  String
+  key       String
+  value     String
+  updatedAt DateTime @updatedAt
+
+  branch Branch @relation(fields: [branchId], references: [id])
+
+  @@unique([branchId, key])
+}
+
+// ─── ActivityLog ─────────────────────────────────────────────────────────────
+
+model ActivityLog {
+  id        String   @id @default(uuid())
+  userId    String?
+  action    String
+  entity    String
+  entityId  String?
+  details   Json?
+  createdAt DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id])
+}

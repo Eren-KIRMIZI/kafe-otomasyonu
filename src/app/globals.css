@@ -1,0 +1,205 @@
+@import "tailwindcss";
+
+/* ─── Light Mode ──────────────────────────────────────────── */
+:root {
+  --background: #faf9f7;
+  --foreground: #1a1208;
+  --muted: #f3ede4;
+  --muted-foreground: #7a6e60;
+  --border: #e8dfd4;
+  --primary: #92400e;
+  --primary-foreground: #fffbf5;
+  --secondary: #f3ede4;
+  --secondary-foreground: #1a1208;
+  --accent: #fef3c7;
+  --accent-foreground: #78350f;
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+  --card: #ffffff;
+  --card-foreground: #1a1208;
+  --ring: #b45309;
+  --radius: 0.75rem;
+  --success: #15803d;
+  --warning: #b45309;
+  --info: #0369a1;
+}
+
+/* ─── Dark Mode ──────────────────────────────────────────── */
+.dark {
+  --background: #0d0b08;
+  --foreground: #f5f0e8;
+  --muted: #1c1810;
+  --muted-foreground: #a89880;
+  --border: #2d2520;
+  --primary: #d97706;
+  --primary-foreground: #0d0b08;
+  --secondary: #1c1810;
+  --secondary-foreground: #f5f0e8;
+  --accent: #2d2008;
+  --accent-foreground: #fbbf24;
+  --destructive: #7f1d1d;
+  --destructive-foreground: #fafafa;
+  --card: #161210;
+  --card-foreground: #f5f0e8;
+  --ring: #d97706;
+  --success: #166534;
+  --warning: #92400e;
+  --info: #075985;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-ring: var(--ring);
+  --radius: var(--radius);
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+/* ─── Base ──────────────────────────────────────────────── */
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  border-color: var(--border);
+}
+
+/* ─── Scrollbar ─────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--muted-foreground);
+}
+
+/* ─── Selection ─────────────────────────────────────────── */
+::selection {
+  background: color-mix(in srgb, var(--primary) 20%, transparent);
+}
+
+/* ─── Focus Ring ────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* ─── Print ─────────────────────────────────────────────── */
+@media print {
+  body {
+    background: white;
+    color: black;
+  }
+  .no-print {
+    display: none !important;
+  }
+  .print-only {
+    display: block !important;
+  }
+  @page {
+    margin: 0.5in;
+    size: auto;
+  }
+  table {
+    break-inside: avoid;
+  }
+  tr {
+    break-inside: avoid;
+  }
+}
+
+/* ─── Animations ────────────────────────────────────────── */
+@keyframes toast-slide-in {
+  from { opacity: 0; transform: translateX(100%) scale(0.9); }
+  to   { opacity: 1; transform: translateX(0) scale(1); }
+}
+@keyframes toast-slide-out {
+  from { opacity: 1; transform: translateX(0) scale(1); }
+  to   { opacity: 0; transform: translateX(100%) scale(0.9); }
+}
+@keyframes skeleton-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+@keyframes slide-in-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes slide-in-down {
+  from { opacity: 0; transform: translateY(-12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1); }
+}
+@keyframes shimmer {
+  from { background-position: -200% center; }
+  to   { background-position: 200% center; }
+}
+
+/* ─── Utility Classes ───────────────────────────────────── */
+@utility animate-toast-slide-in {
+  animation: toast-slide-in 0.3s ease-out;
+}
+@utility animate-toast-slide-out {
+  animation: toast-slide-out 0.3s ease-in;
+}
+@utility animate-skeleton {
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+}
+@utility animate-slide-in-up {
+  animation: slide-in-up 0.3s ease-out;
+}
+@utility animate-slide-in-down {
+  animation: slide-in-down 0.3s ease-out;
+}
+@utility animate-fade-in {
+  animation: fade-in 0.25s ease-out;
+}
+@utility animate-scale-in {
+  animation: scale-in 0.2s ease-out;
+}
+
+/* ─── Glass Effect ──────────────────────────────────────── */
+@utility glass {
+  backdrop-filter: blur(12px) saturate(150%);
+  -webkit-backdrop-filter: blur(12px) saturate(150%);
+}
+
+/* ─── Gradient Text ─────────────────────────────────────── */
+@utility gradient-text {
+  background: linear-gradient(135deg, var(--primary), color-mix(in srgb, var(--primary) 60%, #f59e0b));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
